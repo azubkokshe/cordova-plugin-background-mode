@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-background-mode",
+  "name": "cordova-plugin-backgroundmode",
   "version": "0.6.3",
   "description": "Prevent apps from going to sleep in background.",
   "cordova": {
-    "id": "cordova-plugin-background-mode",
+    "id": "de.appplant.cordova.plugin.background-mode",
     "platforms": [
       "android",
       "wp8",
@@ -31,8 +31,8 @@
       "version": ">=3.0.0"
     }
   ],
-  "author": "Didier Baquier",
-  "license": "MIT",
+  "author": "Sebastián Katzer",
+  "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/vkeepe/cordova-plugin-background-mode/issues"
   },
