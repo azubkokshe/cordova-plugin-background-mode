@@ -35,6 +35,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.app.NotificationChannel;
+import android.graphics.Color;
 
 import org.json.JSONObject;
 
@@ -173,20 +174,20 @@ public class ForegroundService extends Service {
     {
         // use channelid for Oreo and higher
         String CHANNEL_ID = "cordova-plugin-background-mode-id";
-        if(Build.VERSION.SDK_INT >= 26){
-        // The user-visible name of the channel.
-        CharSequence name = "cordova-plugin-background-mode";
-        // The user-visible description of the channel.
-        String description = "cordova-plugin-background-moden notification";
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // The user-visible name of the channel.
+            CharSequence name = "cordova-plugin-background-mode";
+            // The user-visible description of the channel.
+            String description = "cordova-plugin-background-moden notification";
 
-        int importance = NotificationManager.IMPORTANCE_LOW;
+            int importance = NotificationManager.IMPORTANCE_LOW;
 
-        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,importance);
-
-        // Configure the notification channel.
-        mChannel.setDescription(description);
-
-        getNotificationManager().createNotificationChannel(mChannel);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,importance);
+            mChannel.setLightColor(Color.BLUE);
+            // Configure the notification channel.
+            mChannel.setDescription(description);
+            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            getNotificationManager().createNotificationChannel(mChannel);
         }
         String title    = settings.optString("title", NOTIFICATION_TITLE);
         String text     = settings.optString("text", NOTIFICATION_TEXT);
@@ -197,15 +198,18 @@ public class ForegroundService extends Service {
         Intent intent   = context.getPackageManager()
                 .getLaunchIntentForPackage(pkgName);
 
-        Notification.Builder notification = new Notification.Builder(context)
+        Notification.Builder notification;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notification = new Notification.Builder(context, CHANNEL_ID);
+        } else {
+            notification = new Notification.Builder(context);
+        }
+
+        notification.setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setOngoing(true)
                 .setSmallIcon(getIconResId(settings));
-
-        if(Build.VERSION.SDK_INT >= 26){
-                   notification.setChannelId(CHANNEL_ID);
-        }
 
         if (settings.optBoolean("hidden", true)) {
             notification.setPriority(Notification.PRIORITY_MIN);
